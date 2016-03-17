@@ -1,5 +1,7 @@
 \documentclass[]{article}
 
+\usepackage{amsfonts}
+
 %opening
 \title{Computing the CM of an Image in $\Theta(n^2)$}
 \author{Thenaesh Elango (A0124772E)}
@@ -9,20 +11,40 @@
 	
 	\maketitle
 	
-	\section{Description}
-		\subsection{Introduction}
-			\paragraph{}
-			We present an algorithm to compute the center of mass of a square image (specifically 25 X 25), in $\Theta(n^2)$ time.
+	\section{Introduction}
+		\paragraph{}
+		We present an algorithm to compute the center of mass of a square image (n x n, specifically 25 X 25), in $\Theta(n^2)$ time.
 		
-		\subsection{Sequence of Steps}
-			\paragraph{}
-			Read in the image matrix $A$.
-			\paragraph{}
-			Compute the arrays $V$ and $H$, where $V_i = \sum\nolimits_{j = 1}^{n - 1} A_{i,j}$ and $H_j = \sum\nolimits_{i = 1}^{n - 1} A_{i,j}$. Intuitively, each element of $V$ is the sum of all the elements in the corresponding row of $A$, and each element of $H$ is the sum of all the elements in the corresponding column of $A$.
-			\paragraph{}
-			Compute the arrays $V_\delta$ and $H_\delta$, where $(V_\delta)_i = |\sum\nolimits_{r = 1}^{i - 1} V_r - \sum\nolimits_{r = i + 1}^{n} V_r|$ and $(H_\delta)_i = |\sum\nolimits_{r = 1}^{i - 1} H_r - \sum\nolimits_{r = i + 1}^{n} H_r|$. Intuitively, for each row $i$, we partition $A$ into two by omitting row $i$. We then separately sum up the two partitions take the absolute value of their difference. This difference is stored in $(V_\delta)_i.$ We do the same for each column $j$, storing the difference in $(H_\delta)_j$.
+	\section{Algorithm Description}
+		\paragraph{Step 1}
+		Read in the image matrix $A$.
+		\paragraph{Step 2}
+		Compute the arrays $V$ and $H$, where $V_i = \sum\nolimits_{j = 1}^{n - 1} A_{i,j}$ and $H_j = \sum\nolimits_{i = 1}^{n - 1} A_{i,j}$. Intuitively, each element of $V$ is the sum of all the elements in the corresponding row of $A$, and each element of $H$ is the sum of all the elements in the corresponding column of $A$.
+		\paragraph{Step 3}
+		Compute the arrays $V_\delta$ and $H_\delta$, where $(V_\delta)_i = |\sum\nolimits_{r = 1}^{i - 1} V_r - \sum\nolimits_{r = i + 1}^{n} V_r|$ and $(H_\delta)_i = |\sum\nolimits_{r = 1}^{i - 1} H_r - \sum\nolimits_{r = i + 1}^{n} H_r|$. Intuitively, for each index $i$, we partition $V$ into two: one partition with element indices less than $i$ and another partition with element indices greater than $i$. We then separately sum up the elements in each partition and take the absolute value of the difference of the two sums. This difference is stored in $(V_\delta)_i.$ We do the same for each column $j$, partitioning $H$ and storing the absolute difference in sums in $(H_\delta)_j$.
+		
+		\paragraph{Step 4}
+		Define a function $greatestMinimalIndex: S \to \mathbb{Z}^+$ that takes in an array $S$ of finite length and returns the greatest index $i$ for which $S_i$ is a minimal element of $S$. Compute $r = greatestMinimalIndex(V_\delta)$ and $c = greatestMinimalIndex(H_\delta)$.
+		
+		\paragraph{Step 5}
+		Output $(r,c)$ as the coordinates of the centre of mass of $A$, and $A_{r,c}$ as the value of the centre of mass of $A$.
+			
 	
 	\section{Correctness Proof}
+		\paragraph{}
+		Consider the output $(r,c)$ for the coordinates of the centre of mass. 
+		
+		\paragraph{Condition $\alpha$}
+		We observe that $(V_\delta)_r$ is minimal. Thus, in the original image matrix $A$, the absolute difference between the sum of the rows above row $r$ and the sum of the rows below row $r$ is minimal.
+		
+		\paragraph{Condition $\beta$}
+		Likewise, we observe that $(H_\delta)_c$ is minimal. This, in the original image matrix $A$, the absolute difference between the sum of the columns left of $c$ and the sum of the columns right of $c$ is minimal.
+		
+		\paragraph{}
+		At this point, we have shown that $(r,c)$ satisfies conditions $\alpha$ and $\beta$ as denoted above. We now note that satisfying both conditions $\alpha$ and $\beta$ taken together is equivalent to satisfying the centre of mass property.
+		
+		\paragraph{}
+		Therefore, we have shown that the coordinates $(r,c)$ output by the algorithm with image matrix $A$ indeed identify the centre of mass of the image represented by $A$. QED
 	
 	\section{Complexity Analysis}
 	
