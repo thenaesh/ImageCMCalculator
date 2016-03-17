@@ -1,0 +1,30 @@
+\documentclass[]{article}
+
+%opening
+\title{Computing the CM of an Image in $\Theta(n^2)$}
+\author{Thenaesh Elango (A0124772E)}
+
+\begin{document}
+	
+	
+	\maketitle
+	
+	\section{Description}
+		\subsection{Introduction}
+			\paragraph{}
+			We present an algorithm to compute the center of mass of a square image (specifically 25 X 25), in $\Theta(n^2)$ time.
+		
+		\subsection{Sequence of Steps}
+			\paragraph{}
+			Read in the image matrix $A$.
+			\paragraph{}
+			Compute the arrays $V$ and $H$, where $V_i = \sum\nolimits_{j = 1}^{n - 1} A_{i,j}$ and $H_j = \sum\nolimits_{i = 1}^{n - 1} A_{i,j}$. Intuitively, each element of $V$ is the sum of all the elements in the corresponding row of $A$, and each element of $H$ is the sum of all the elements in the corresponding column of $A$.
+			\paragraph{}
+			Compute the arrays $V_\delta$ and $H_\delta$, where $(V_\delta)_i = |\sum\nolimits_{r = 1}^{i - 1} V_r - \sum\nolimits_{r = i + 1}^{n} V_r|$ and $(H_\delta)_i = |\sum\nolimits_{r = 1}^{i - 1} H_r - \sum\nolimits_{r = i + 1}^{n} H_r|$. Intuitively, for each row $i$, we partition $A$ into two by omitting row $i$. We then separately sum up the two partitions take the absolute value of their difference. This difference is stored in $(V_\delta)_i.$ We do the same for each column $j$, storing the difference in $(H_\delta)_j$.
+	
+	\section{Correctness Proof}
+	
+	\section{Complexity Analysis}
+	
+	
+\end{document}
