@@ -15,24 +15,32 @@
 		\paragraph{}
 		We present an algorithm to compute the center of mass of a square image (n x n, specifically 25 X 25), in $\Theta(n^2)$ time.
 		
+		\paragraph{Definitions}
+		For any matrix $M$, $(M)_{i,j}$ denotes the element of $M$ at row $i$, column $j$. For any (ordered) array $S$, $(S)_i$ denotes the element of $S$ with index $i$. We place the surrounding parentheses to avoid confusion when subscripts are used for other purposes (e.g. when we write $V_\delta)$. We require all arrays to have a finite (integer) length, as per an array represented in a physical computer.
+		
 	\section{Algorithm Description}
 		\paragraph{Step 1}
 		Read in the image matrix $A$.
 		\paragraph{Step 2}
-		Compute the arrays $V$ and $H$, where $V_i = \sum\nolimits_{j = 1}^n A_{i,j}$ and $H_j = \sum\nolimits_{i = 1}^n A_{i,j}$. Intuitively, each element of $V$ is the sum of all the elements in the corresponding row of $A$, and each element of $H$ is the sum of all the elements in the corresponding column of $A$.
+		Compute the arrays $V$ and $H$, where $(V)_i = \sum\nolimits_{j = 1}^n (A)_{i,j}$ and $(H)_j = \sum\nolimits_{i = 1}^n (A)_{i,j}$. Intuitively, each element of $V$ is the sum of all the elements in the corresponding row of $A$, and each element of $H$ is the sum of all the elements in the corresponding column of $A$.
 		\paragraph{Step 3}
-		Compute the arrays $V_\delta$ and $H_\delta$, where $(V_\delta)_i = |\sum\nolimits_{r = 1}^{i - 1} V_r - \sum\nolimits_{r = i + 1}^{n} V_r|$ and $(H_\delta)_i = |\sum\nolimits_{r = 1}^{i - 1} H_r - \sum\nolimits_{r = i + 1}^{n} H_r|$. Intuitively, for each index $i$, we partition $V$ into two: one partition with element indices less than $i$ and another partition with element indices greater than $i$. We then separately sum up the elements in each partition and take the absolute value of the difference of the two sums. This difference is stored in $(V_\delta)_i.$ We do the same for each column $j$, partitioning $H$ and storing the absolute difference in sums in $(H_\delta)_j$.
+		Compute the arrays $V_\delta$ and $H_\delta$, where $(V_\delta)_i = |\sum\nolimits_{r = 1}^{i - 1} (V)_r - \sum\nolimits_{r = i + 1}^{n} (V)_r|$ and $(H_\delta)_i = |\sum\nolimits_{r = 1}^{i - 1} (H)_r - \sum\nolimits_{r = i + 1}^{n} (H)_r|$. Intuitively, for each index $i$, we partition $V$ into two: one partition with element indices less than $i$ and another partition with element indices greater than $i$. We then separately sum up the elements in each partition and take the absolute value of the difference of the two sums. This difference is stored in $(V_\delta)_i.$ We do the same for each column $j$, partitioning $H$ and storing the absolute difference in sums in $(H_\delta)_j$.
 		
 		\paragraph{Step 4}
-		Define a function $greatestMinimalIndex: S \to \mathbb{Z}^+$ that takes in an array $S$ of finite length and returns the greatest index $i$ for which $S_i$ is a minimal element of $S$. Compute $r = greatestMinimalIndex(V_\delta)$ and $c = greatestMinimalIndex(H_\delta)$.
+		Define a function $greatestMinimalIndex: S \to \mathbb{Z}^+$ that takes in an array $S$ and returns the greatest index $i$ for which $(S)_i$ is a minimal element of $S$. Compute $r = greatestMinimalIndex(V_\delta)$ and $c = greatestMinimalIndex(H_\delta)$.
 		
 		\paragraph{Step 5}
-		Output $(r,c)$ as the coordinates of the centre of mass of $A$, and $A_{r,c}$ as the value of the centre of mass of $A$.
+		Output $(r,c)$ as the coordinates of the centre of mass of $A$, and $(A)_{r,c}$ as the value of the centre of mass of $A$.
 			
 	
 	\section{Correctness Proof}
 		\paragraph{}
-		Consider the output $(r,c)$ for the coordinates of the centre of mass. 
+		Consider the output $(r,c)$ for the coordinates of the centre of mass.
+		
+		\paragraph{Lemma}
+		We first begin by showing the correctness of the $getMinimalElement$ function. This function makes a single pass over its parameter array $S$ and maintains state comprising a current minimal index $i_m$. If, at any iteration $i$, $(S)_i <= (S)_{i_m}$, $i_m$ is set to the value $i$. After a single pass over the array ($n$ iterations), $greatestMinimalIndex$ returns the greatest index (due to $<=$ being used in the comparison) of the minimal element of $S$, which is what we wanted to show. 
+		
+		\paragraph{QED}
 		
 		\paragraph{Condition $\alpha$}
 		We observe that $(V_\delta)_r$ is minimal. Thus, in the original image matrix $A$, the absolute difference between the sum of the rows above row $r$ and the sum of the rows below row $r$ is minimal.
@@ -56,16 +64,27 @@
 		We observe that \textbf{Step 1} involves reading in an $n x n$ matrix. This entails reading and storing $n^2$ values, and thus takes $\Theta(n^2)$ time.
 		
 		\paragraph{}
-		Computing $V_i$ for each row $i$ involves a sum of $n$ elements, and thus each takes $\Theta(n)$ time. As computing $V$ involves computing $V_i$ for $n$ different values of $i$ (since there are $n$ rows), computing $V$ takes $\Theta(n^2)$ time. By a similar argument, computing $H$ takes $\Theta(n^2)$ time. \textbf{Step 2} thus takes $\Theta(n^2)$ time.
+		Computing $(V)_i$ for each row $i$ involves a sum of $n$ elements, and thus each takes $\Theta(n)$ time. As computing $V$ involves computing $(V)_i$ for $n$ different values of $i$ (since there are $n$ rows), computing $V$ takes $\Theta(n^2)$ time. By a similar argument, computing $H$ takes $\Theta(n^2)$ time. \textbf{Step 2} thus takes $\Theta(n^2)$ time.
 		
 		\paragraph{}
 		Computing $(V_\delta)_i$ involves $n - 1$ sums, a single subtraction and a single absolute value operation, which takes a total of $\Theta(n)$ time. Thus, computing $V_\delta$ takes $\Theta(n^2)$ time. By a similar argument, computing $H_\delta$ takes $\Theta(n^2)$ time. Thus, \textbf{Step 3} takes $\Theta(n^2)$ time.
 		
 		\paragraph{}
-		\textbf{Step 4} involves finding the minimal element of highest index in $V_\delta$ and in $H_\delta$. Each of these only requires a single pass over the array and thus takes $\Theta(n)$ time. Thus, \textbf{Step 4} takes $\Theta(n)$ time.
+		To analyse \textbf{Step 4}, we first look at the $greatestMinimalIndex$ function. This function requires only a single pass over its parameter array $S$ (by the lemma in section 3) and thus requires $\Theta(|S|)$ time.
+		
+		\paragraph{}
+		\textbf{Step 4} involves finding the minimal element of highest index in $V_\delta$ and in $H_\delta$. This involves one call to $greatestMinimalIndex(V_\delta)$ and one call to $greatestMinimalIndex(V_\delta)$. Each of these calls takes $\Theta(n)$ time, by the analysis in the above paragraph. Thus, \textbf{Step 4} takes $\Theta(n)$ time.
 		
 		\paragraph{}
 		\textbf{Step 5} takes $\Theta(1)$ time as it involves merely outputting 3 numbers.
+		
+		\paragraph{}
+		We let $T_k(n)$ be the time complexity of \textbf{Step k}, and $T(n)$ be the time complexity of the entire algorithm. Then $T(n) = \sum\nolimits_{k = 1}^5 T_k(n) = \Theta(n^2) + \Theta(n^2) + \Theta(n^2) + \Theta(n) + \Theta(1) = \Theta(n^2)$.
+		
+		\paragraph{}
+		Therefore, the algorithm presented runs in $\Theta(n^2)$ time, for an $n x n$ input matrix representing the image.
+		
+		\paragraph{QED}
 	
 	
 \end{document}
